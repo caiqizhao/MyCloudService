@@ -2,6 +2,7 @@ package org.caiqizhao.serlvet;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.caiqizhao.util.PasswordMD5Util;
 import org.mysql.mapper.SQLUserMapper;
 import org.mysql.util.MySQLdb;
 
@@ -69,7 +70,7 @@ public class UpdateUserServlet extends HttpServlet {
                 try {
                     if(sqlUtil.isUserPassword(username,password)!=0){
                         password = request.getParameter("newpassword");
-                        sqlUtil.updatePassword(username,password);
+                        sqlUtil.updatePassword(username, PasswordMD5Util.generateMD5(password));
                         sqlSession.commit();
                         out = response.getWriter();
                         out.print("修改密码成功");

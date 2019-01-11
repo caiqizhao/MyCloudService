@@ -2,6 +2,7 @@ package org.caiqizhao.serlvet;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.caiqizhao.util.PasswordMD5Util;
 import org.mysql.entity.User;
 import org.mysql.mapper.SQLUserMapper;
 import org.mysql.util.MySQLdb;
@@ -34,7 +35,7 @@ public class RegisterServlet extends HttpServlet {
             out = response.getWriter();
             out.print("用户名已被占用");
         }else {
-            sqlUtil.addUser(username,password);
+            sqlUtil.addUser(username, PasswordMD5Util.generateMD5(password));
             out = response.getWriter();
             out.print("注册成功");
         }

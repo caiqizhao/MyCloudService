@@ -4,6 +4,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.caiqizhao.util.PasswordMD5Util;
 import org.mysql.entity.Directory;
 import org.mysql.entity.User;
 import org.mysql.entity.UserFile;
@@ -32,7 +33,7 @@ public class LoginServlet extends javax.servlet.http.HttpServlet {
         response.setContentType("text/plain;charset=UTF-8");
         PrintWriter out = response.getWriter();
         if(user != null){
-            if(user.getUser_password().equals(password)) {
+            if(user.getUser_password().equals(PasswordMD5Util.generateMD5(password))) {
                 JSONObject user_json = JSONObject.fromObject(user);
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("user",user_json);
