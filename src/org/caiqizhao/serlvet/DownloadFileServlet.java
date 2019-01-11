@@ -25,23 +25,35 @@ public class DownloadFileServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String username = request.getParameter("username");
         String filename = request.getParameter("filename");
+        String dir_id = request.getParameter("dir_id");
         SqlSessionFactory sqlSessionFactory = MySQLdb.getSqlSession();
         SqlSession sqlSession = sqlSessionFactory.openSession();
         UserFile user_file = null;
         SQLFileMapper sqlUtil = sqlSession.getMapper(SQLFileMapper.class);
-        user_file = sqlUtil.getDownloadFile(username,filename);
-
+        if(dir_id==null||dir_id.equals("0")) {
+            user_file = sqlUtil.getNotDirDownloadFile(username, filename);
+        }else{
+            user_file = sqlUtil.getDownloadFile(username,filename,Integer.parseInt(dir_id));
+        }
         response.setContentType("text/plain;charset=UTF-8");
+        //将文件名添加到响应头中
+        response.setHeader("Content - disposition","attachment;filename="+filename);
+        //获取要下载的文件对象
+        File file = new File("/Users/caiqizhao/CQZ/"+user_file.getFile_hash());
+        //返回文件的总长度
+        response.setContentLength((int) file.length());
         OutputStream out = response.getOutputStream();
-        FileInputStream in = null;
-        in = new FileInputStream("/Users/caiqizhao/CQZ/"+user_file.getFile_hash());
+        RandomAccessFile randomAccessFile = new RandomAccessFile(file,"rw");
+        //若请求为下载请求移动下载指针（有下载请求和获取文件长度请求）
+        if(request.getHeader("RANGE")!=null){
+            randomAccessFile.seek(Integer.parseInt(request.getHeader("RANGE").split("=")[1].split("-")[0]));
+        }
         byte[] b = new byte[1024*5];
         int size;
-        while ( (size = in.read(b)) != -1) {
-            System.out.println(size);
+        while ( (size = randomAccessFile.read(b)) != -1) {
             out.write(b,0,size);
         }
-
+        randomAccessFile.close();
         out.flush();
         sqlSession.close();
     }

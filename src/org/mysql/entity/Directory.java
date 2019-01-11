@@ -4,7 +4,6 @@ public class Directory {
     private Integer dir_id;
     private String dir_name;
     private Integer dir_parent;
-    private Integer dir_child;
     private String user_name;
 
 
@@ -14,7 +13,6 @@ public class Directory {
                 "dir_id=" + dir_id +
                 ", dir_name='" + dir_name + '\'' +
                 ", dir_parent=" + dir_parent +
-                ", dir_child=" + dir_child +
                 ", user_name='" + user_name + '\'' +
                 '}';
     }
@@ -41,14 +39,6 @@ public class Directory {
 
     public void setDir_parent(Integer dir_parent) {
         this.dir_parent = dir_parent;
-    }
-
-    public Integer getDir_child() {
-        return dir_child;
-    }
-
-    public void setDir_child(Integer dir_child) {
-        this.dir_child = dir_child;
     }
 
     public String getUser_name() {
